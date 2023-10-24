@@ -23,10 +23,10 @@ def data_get(path):
 def data_post(path):
     path = os.path.join("data", path)
 
-    if os.path.exists(path):
-        return f"File \"{path}\" already exists", 409
+    if any([os.path.exists(os.path.join(path, f.filename)) for f in request.files.values()]):
+        return f"Some files already exist", 409
 
-    for _, file in request.files.items():
+    for file in request.files.values():
         os.makedirs(path, exist_ok=True)
         file.save(os.path.join(path, file.filename))
 
